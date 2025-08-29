@@ -43,3 +43,6 @@ steps:
 
 images:
   - "asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
