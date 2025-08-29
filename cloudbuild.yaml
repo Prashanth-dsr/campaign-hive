@@ -9,12 +9,11 @@ steps:
     args: ["run", "build"]
 
   # Step 2: Build the image using Buildpacks
-  - name: gcr.io/cloud-builders/docker
+  - name: "gcr.io/k8s-skaffold/pack"
     args:
       - build
-      - -t
-      - asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA
-      - .
+      - "asia-south1-docker.pkg.dev/$PROJECT_ID/campaign-app-repo/campaign-hive:$COMMIT_SHA"
+      - --builder=gcr.io/buildpacks/builder:latest
 
   - name: gcr.io/cloud-builders/docker
     args:
