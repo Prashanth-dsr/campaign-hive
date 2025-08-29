@@ -8,27 +8,33 @@ steps:
     entrypoint: npm
     args: ["run", "build"]
 
-  # Step 1: Build the image using Buildpacks
-  - name: gcr.io/buildpacks/builder
+  # Step 2: Build the image using Buildpacks
+  - name: gcr.io/cloud-builders/docker
     args:
       - build
+      - -t
       - asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA
-      - --builder=gcr.io/buildpacks/builder:v1
+      - .
 
-  # Step 2: Deploy to Cloud Run
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA
+
+  # Step 3: Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
       - run
       - deploy
       - campaign-hive
-      - --image=asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA
+      - --image=asia-south1-docker.pkg.dev/$PROJECT_ID/campaign-app-repo/campaign-hive:$COMMIT_SHA
       - --region=asia-south1
       - --platform=managed
       - --allow-unauthenticated
 
 images:
-  - "asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA"
+  - asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA
 
 options:
   logging: CLOUD_LOGGING_ONLY
