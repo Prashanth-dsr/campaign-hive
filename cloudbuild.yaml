@@ -1,0 +1,45 @@
+steps:
+  # Step 1: Install dependencies & build Next.js
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["install"]
+
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["run", "build"]
+
+  # Step 2: Build Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA",
+        ".",
+      ]
+
+  # Step 3: Push Docker image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA",
+      ]
+
+  # Step 4: Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "my-app",
+        "--image",
+        "asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA",
+        "--region",
+        "asia-south1",
+        "--platform",
+        "managed",
+        "--allow-unauthenticated",
+      ]
+
+images:
+  - "asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA"
