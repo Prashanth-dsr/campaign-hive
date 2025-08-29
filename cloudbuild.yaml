@@ -31,7 +31,7 @@ steps:
       [
         "run",
         "deploy",
-        "my-app",
+        "campaign-hive",
         "--image",
         "asia-south1-docker.pkg.dev/iron-portfolio-470506-p3/campaign-app-repo/campaign-hive:$COMMIT_SHA",
         "--region",
